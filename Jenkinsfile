@@ -1,28 +1,26 @@
 pipeline {
-	agent none
+	agent {
+		label 'MasterGroup'
+	}
 	stages {
-		stage("Name : Stage 1") {
-			agent {
-				label 'Group1'
-			}
+		stage ("Clone GOL - GitHub Central Repo") {
 			steps {
-				echo "Welcome to Genesso Trainings"
+				git 'https://github.com/wakaleo/game-of-life.git'
 			}
 		}
-		stage("Name : Stage 2") {
-			agent {
-				label 'Group1'
-			}
+		stage ("Build GOL - MAVEN") {
 			steps {
-				echo "This is the second stage of Declarative Pipeline"
+				sh 'mvn clean package'
 			}
 		}
-		stage("Hyderabad") {
-			agent {
-				label 'MasterGroup'
-			}
+		stage ("Archive Artifacts") {
 			steps {
-				echo "This stage is for Hyderabad"
+				archiveArtifacts artifacts: 'gameoflife-web/target/*.war', followSymlinks: false
+			}
+		}
+		stage ("Publish Junit Test Results") {
+			steps {
+				junit 'gameoflife-web/target/surefire-reports/*.xml'
 			}
 		}
 	}
