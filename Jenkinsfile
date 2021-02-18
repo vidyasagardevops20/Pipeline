@@ -2,6 +2,9 @@ pipeline {
 	agent {
 		label 'MasterGroup'
 	}
+	triggers {
+		pollSCM '* * * * *'
+	}
 	stages {
 		stage ("Clone GOL - GitHub Central Repo") {
 			steps {
